@@ -10,10 +10,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import type { Task } from './task.model';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTasStatuskDto } from './dto/update-task-status.dto';
+import { Task } from './task.entity';
 
 @Controller('tasks')
 export class TasksController {
@@ -29,25 +29,27 @@ export class TasksController {
   }
 
   @Get('/:id')
-  getTaskById(@Param('id', ParseIntPipe) id: number): Task | undefined {
-    return this.tasksService.getTaskById(id);
+  async getTaskById(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Task | undefined> {
+    return await this.tasksService.getTaskById(id);
   }
 
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Task {
-    return this.tasksService.createTask(createTaskDto);
+  async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+    return await this.tasksService.createTask(createTaskDto);
   }
 
   @Delete('/:id')
-  deleteTaskById(@Param('id', ParseIntPipe) id: number): boolean {
-    return this.tasksService.deleteTask(id);
+  async deleteTaskById(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return await this.tasksService.deleteTask(id);
   }
 
   @Patch('/:id/status')
-  updateTaskStatus(
+  async updateTaskStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() { status }: UpdateTasStatuskDto
-  ): Task | null {
-    return this.tasksService.updateTaskStatus(id, status);
+  ): Promise<Task | null> {
+    return await this.tasksService.updateTaskStatus(id, status);
   }
 }
